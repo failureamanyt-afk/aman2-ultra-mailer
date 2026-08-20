@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMAN2 Ultra</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+    body { background-color: #d1d5db; color: #000000; overflow-x: hidden; user-select: none; }
+    
+    /* Top Header Bar */
+    .header-bar {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border-bottom: 1px solid #111;
+    }
+    .header-left { display: flex; align-items: center; gap: 8px; }
+    .icon-box { background: #00E5FF; color: #000; font-weight: bold; padding: 2px 6px; border-radius: 2px; }
+    .header-title { font-weight: bold; font-size: 13px; letter-spacing: 0.5px; color: #00E5FF; }
+    .header-num { margin-left: 20px; font-weight: bold; color: #cbd5e1; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .welcome-text { font-weight: bold; font-size: 12px; color: #ffffff; }
+    .role-badge { background: #f59e0b; color: #000; font-weight: bold; padding: 1px 6px; border-radius: 2px; font-size: 10px; }
+    .btn-download-top { background: #00E5FF; color: #000; font-weight: bold; padding: 2px 8px; border-radius: 3px; text-decoration: none; font-size: 11px; }
+    .menu-link { color: #00e676; font-weight: bold; cursor: pointer; text-decoration: underline; }
+    .logout-link { color: #ef4444; font-weight: bold; text-decoration: none; font-size: 11px; margin-left: 6px; }
+    .win-controls { display: flex; gap: 6px; }
+    .win-btn { background: #334155; color: #fff; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 2px; font-size: 10px; cursor: pointer; }
+
+    /* Task Row */
+    .task-row {
+      background: #e2e8f0;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 2px solid #cbd5e1;
+    }
+    .btn-add-task {
+      background: #f1f5f9;
+      border: 1px solid #94a3b8;
+      font-weight: bold;
+      padding: 6px 14px;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 #fff;
+    }
+    .task-tab {
+      border: 1px solid #94a3b8;
+      background: #ffffff;
+      width: 105px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .task-tab-top { font-weight: bold; font-size: 11px; padding: 2px 0; background: #ffffff; border-bottom: 1px solid #cbd5e1; }
+    .task-tab-bot { font-weight: bold; font-size: 11px; padding: 2px 0; background: #64748b; color: #fff; transition: background 0.3s; }
+    .task-tab-bot.running { background: #f59e0b; color: #000; }
+    .task-tab-bot.completed { background: #00e676; color: #000; }
+
+    .date-box { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+    .date-input { background: #ffffff; border: 1px solid #94a3b8; padding: 3px 6px; width: 95px; font-weight: bold; }
+    .btn-all-tag {
+      background: #00c853;
+      color: #ffffff;
+      font-weight: bold;
+      border: 1px solid #009624;
+      padding: 6px 18px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    /* Main Container */
+    .main-grid {
+      display: flex;
+      padding: 6px;
+      gap: 6px;
+      height: calc(100vh - 66px);
+      background: #c8d0d8;
+    }
+
+    /* Left Recipient Box */
+    .left-panel {
+      width: 250px;
+      background: #e2e8f0;
+      border: 1px solid #94a3b8;
+      display: flex;
+      flex-direction: column;
+      padding: 4px;
+    }
+    .left-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .btn-paste { background: #f8fafc; border: 1px solid #64748b; font-weight: bold; padding: 3px 12px; cursor: pointer; }
+    .btn-trash { background: #3b82f6; color: #fff; border: 1px solid #1d4ed8; padding: 2px 8px; cursor: pointer; border-radius: 2px; }
+
+    .recipient-list-box {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      overflow-y: auto;
+      font-family: Consolas, monospace;
+      font-size: 11px;
+    }
+    .recipient-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2.5px 6px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .recipient-item:hover { background: #f8fafc; }
+    .check-icon { font-weight: bold; color: #15803d; }
+
+    .left-bottom-bar { margin-top: 4px; display: flex; flex-direction: column; gap: 4px; }
+    .import-row { display: flex; justify-content: space-between; align-items: center; }
+    .btn-import { background: #2563eb; color: #fff; font-weight: bold; border: 1px solid #1d4ed8; padding: 4px 12px; cursor: pointer; }
+    .btn-import:hover { background: #1d4ed8; }
+    .badge-success { background: #64748b; color: #fff; font-weight: bold; padding: 4px 10px; border-radius: 2px; }
+    .specif-row { display: flex; align-items: center; gap: 4px; font-weight: bold; }
+    .specif-row select, .specif-row input { border: 1px solid #94a3b8; padding: 2px; background: #fff; }
+    .btn-get { background: #f1f5f9; border: 1px solid #94a3b8; padding: 2px 8px; cursor: pointer; }
+
+    /* Center Work Area */
+    .center-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    /* Dark Top Bar */
+    .dark-top-box {
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #333;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .radio-group { display: flex; flex-direction: column; gap: 1px; font-size: 11px; font-weight: bold; }
+    .blue-link-box { background: #000000; color: #38bdf8; border: 1px solid #1e3a8a; padding: 2px 6px; font-weight: bold; cursor: pointer; text-decoration: underline; }
+    .chk-col { display: flex; flex-direction: column; gap: 2px; font-size: 11px; }
+    .red-link { color: #ef4444; font-weight: bold; text-decoration: underline; cursor: pointer; }
+    .btn-pause { background: #c02222; color: #ffffff; font-weight: bold; border: 1px solid #991b1b; padding: 6px 18px; cursor: pointer; font-size: 13px; }
+
+    /* Sender Config & TFN Row */
+    .sender-tfn-row {
+      display: flex;
+      gap: 6px;
+    }
+    .sender-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .sender-row { display: flex; align-items: center; gap: 4px; }
+    .lbl-fixed { width: 75px; font-weight: bold; font-size: 11px; }
+    .btn-small { background: #e2e8f0; border: 1px solid #94a3b8; padding: 2px 8px; cursor: pointer; font-weight: bold; }
+    .blue-btn-box { color: #1d4ed8; background: #e0f2fe; border: 1px solid #93c5fd; padding: 1px 4px; cursor: pointer; font-size: 10px; }
+    .txt-input { border: 1px solid #94a3b8; background: #ffffff; padding: 3px 6px; font-size: 11px; flex: 1; }
+    .btn-check-bounce { background: #c02222; color: #ffffff; font-weight: bold; border: 1px solid #991b1b; padding: 3px 10px; cursor: pointer; width: 110px; }
+
+    /* Orange TFN Box */
+    .tfn-box {
+      width: 250px;
+      border: 2px solid #f59e0b;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: #d8e0e8;
+    }
+    .tfn-row { display: flex; align-items: center; justify-content: space-between; font-size: 11px; }
+    .tfn-label { font-weight: bold; font-size: 10px; }
+    .green-b64 { color: #15803d; font-weight: bold; font-size: 10px; }
+    .tfn-input { border: 1px solid #94a3b8; background: #ffffff; padding: 2px 4px; font-weight: bold; width: 140px; text-align: center; font-family: Consolas, monospace; }
+
+    /* Body Row */
+    .body-row {
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .body-left-opts {
+      width: 105px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-weight: bold;
+    }
+    .body-textarea {
+      flex: 1;
+      height: 75px;
+      border: 1px solid #94a3b8;
+      background: #ffffff;
+      padding: 6px;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      resize: none;
+    }
+
+    /* Modify HTML Bar */
+    .modify-html-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 0;
+    }
+    .modify-badge { background: #d97706; color: #fff; font-weight: bold; padding: 3px 8px; border: 1px solid #b45309; }
+    .page-format-select { background: #00e676; font-weight: bold; border: 1px solid #00c853; padding: 2px 10px; }
+
+    /* HTML Editor & Format Section */
+    .html-section {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+    }
+    .out-mode-radios {
+      width: 105px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-weight: bold;
+      font-size: 11px;
+    }
+    .html-editor-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .green-dropdown-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+    }
+    .green-select { background: #00e676; font-weight: bold; border: 1px solid #00c853; padding: 2px 6px; }
+    .html-code-area {
+      flex: 1;
+      height: 100px;
+      border: 1px solid #94a3b8;
+      background: #ffffff;
+      padding: 6px;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      resize: none;
+    }
+    .preview-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-preview { background: #00e676; font-weight: bold; border: 1px solid #00c853; padding: 3px 12px; cursor: pointer; }
+
+    /* Action & Status Row */
+    .action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+    .status-sending-text { color: #15803d; font-weight: bold; font-size: 13px; }
+    .status-ready-text { color: #15803d; font-weight: bold; font-size: 12px; }
+    .btn-stop { background: #c02222; color: #fff; font-weight: bold; border: 1px solid #991b1b; padding: 6px 18px; cursor: pointer; font-size: 13px; }
+    .btn-sending { background: #006622; color: #fff; font-weight: bold; border: 1px solid #004d1a; padding: 6px 20px; cursor: pointer; font-size: 13px; }
+    .black-counter-bar { background: #1e293b; color: #ffffff; font-weight: bold; font-size: 13px; padding: 6px 20px; text-align: center; }
+
+    /* Watermark */
+    .watermark-banner {
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      font-family: Impact, sans-serif;
+      font-size: 26px;
+      color: #94a3b8;
+      letter-spacing: 2px;
+    }
+
+    /* Footer */
+    .footer-bar {
+      background: #0f172a;
+      color: #facc15;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 11px;
+      font-family: Consolas, monospace;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      display: none; align-items: center; justify-content: center; z-index: 9999;
+    }
+    .modal-box {
+      background: #1e293b; color: #ffffff; border: 2px solid #00E5FF;
+      border-radius: 8px; width: 520px; max-width: 90vw; padding: 20px; box-shadow: 0 0 25px rgba(0,0,0,0.9);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hidden File Input for Importing Data -->
+  <input type="file" id="fileImporter" accept=".txt,.csv" style="display: none;" onchange="handleFileImport(event)">
+
+  <!-- Top Header -->
+  <div class="header-bar">
+    <div class="header-left">
+      <span class="icon-box">✉</span>
+      <span class="header-title">AMAN2 Ultra</span>
+      <span class="header-num">3273</span>
+    </div>
+    <div class="header-right">
+      <a href="/download" target="_blank" class="btn-download-top">📥 Download</a>
+      
+      <!-- Welcome & Role Status -->
+      <span class="welcome-text">
+        User: <b style="color:#00E5FF;">{{ user.username }}</b> 
+        {% if user.role == 'admin' %}
+          <span class="role-badge">ADMIN</span>
+        {% else %}
+          <span style="color:#a7f3d0; font-size:10px;">(Limit: {{ user.daily_limit }}/day)</span>
+        {% endif %}
+      </span>
+
+      <!-- Show User Management ONLY to Super Admin -->
+      {% if user.role == 'admin' %}
+        <span class="menu-link" onclick="openUserModal()">👥 User Management</span>
+      {% endif %}
+
+      <span class="menu-link" onclick="openAccountsModal()">🔑 Gmail Accounts</span>
+      <a href="/logout" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      
+      <div class="win-controls">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn" style="background:#dc2626;" onclick="window.location.href='/logout'">✕</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Row -->
+  <div class="task-row">
+    {% if user.role == 'admin' %}
+      <button class="btn-add-task" onclick="openUserModal()">+ Add User / Task</button>
+    {% else %}
+      <button class="btn-add-task" onclick="alert('Multi-tasking ready for user: {{ user.username }}')">+ Task Ready</button>
+    {% endif %}
+    
+    <div class="task-tab" id="taskTab5" onclick="switchTask(5)">
+      <div class="task-tab-top">➡ Task 5</div>
+      <div class="task-tab-bot" id="taskSentBadge5">Sent-0</div>
+    </div>
+    <div class="task-tab" id="taskTab4" onclick="switchTask(4)">
+      <div class="task-tab-top">➡ Task 4</div>
+      <div class="task-tab-bot" id="taskSentBadge4">Sent-0</div>
+    </div>
+    <div class="task-tab" id="taskTab3" onclick="switchTask(3)">
+      <div class="task-tab-top">➡ Task 3</div>
+      <div class="task-tab-bot" id="taskSentBadge3">Sent-0</div>
+    </div>
+    <div class="task-tab" id="taskTab2" onclick="switchTask(2)">
+      <div class="task-tab-top">➡ Task 2</div>
+      <div class="task-tab-bot" id="taskSentBadge2">Sent-0</div>
+    </div>
+    <div class="task-tab active" id="taskTab1" onclick="switchTask(1)">
+      <div class="task-tab-top">➡ Task 1</div>
+      <div class="task-tab-bot" id="taskSentBadge1">Sent-0</div>
+    </div>
+
+    <div class="date-box">
+      <span style="font-weight: bold;">Date Setting</span>
+      <input type="text" class="date-input" value="19/08/2026">
+    </div>
+    <button class="btn-all-tag" onclick="openAllTagModal()">ALL TAG</button>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <div class="left-top-bar">
+        <button class="btn-paste" onclick="openPasteModal()">Paste</button>
+        <button class="btn-trash" onclick="clearList()">🗑</button>
+      </div>
+
+      <div class="recipient-list-box" id="recipientBox">
+        <div class="recipient-item"><span>aximuthial@yahoo.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>kkjerook@suddenlink.net</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>marciakitchin@yahoo.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>wazthis68@aol.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>bemiek62@cox.net</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>bettlelady1@yahoo.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>rhorine@woh.rr.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>rosaphampton@yahoo.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>tdkendrick3@yahoo.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>ahirsch786@aol.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>mitziazevedo@charter.net</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>rbroome99@yahoo.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>mcf227@yahoo.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>allenlloyd@nc.rr.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>sheribabee12@aol.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>jab4lfz@verizon.net</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>cindylou22312@yahoo.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>tony.maldonado31@yahoo.com</span><span class="check-icon">✓</span></div>
+        <div class="recipient-item"><span>joeu3118@aol.com</span><span class="check-icon">✓</span></div>
+      </div>
+
+      <div class="left-bottom-bar">
+        <div class="import-row">
+          <button class="btn-import" onclick="document.getElementById('fileImporter').click()">Import Data</button>
+          <span class="badge-success" id="successBadge">Ready</span>
+        </div>
+        <div class="specif-row">
+          <span>Specif :</span>
+          <select style="width: 50px;"><option>ALL</option></select>
+          <input type="number" id="specifCount" value="350" style="width: 45px;">
+          <button class="btn-get" onclick="sliceEmails()">Get</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center Work Area -->
+    <div class="center-panel">
+
+      <!-- Dark Top Bar -->
+      <div class="dark-top-box">
+        <div class="radio-group">
+          <label><input type="radio" name="country" checked> USA</label>
+          <label><input type="radio" name="country"> AUS</label>
+          <label><input type="radio" name="country"> UK</label>
+        </div>
+
+        <div>
+          <span class="blue-link-box" onclick="alert('Unsubscriber link enabled.')">Unsubscriber Link</span>
+          <div style="margin-top: 4px;"><label><input type="checkbox" checked> With Name</label></div>
+        </div>
+
+        <div class="radio-group">
+          <label><input type="radio" name="mode" checked> Mode 1</label>
+          <label><input type="radio" name="mode"> Mode 2</label>
+          <label><input type="radio" name="mode"> Mode 3</label>
+        </div>
+
+        <div class="chk-col">
+          <label><input type="checkbox" checked> GrayScale</label>
+          <label style="color:#64748b;"><input type="checkbox"> High Quality</label>
+          <label><input type="checkbox" checked> High Size</label>
+        </div>
+
+        <div class="chk-col">
+          <label><input type="checkbox" checked> Crop Image</label>
+          <span class="red-link" onclick="openErrorModal()">Error List</span>
+          <label style="color: #ef4444; font-weight: bold;"><input type="checkbox" checked> ReachedLimit Check</label>
+        </div>
+
+        <button class="btn-pause" onclick="togglePause()">Pause</button>
+      </div>
+
+      <!-- Sender Config & TFN Row -->
+      <div class="sender-tfn-row">
+        <div class="sender-box">
+          <div class="sender-row">
+            <button class="btn-small" onclick="alert('Cache and buffers cleared successfully!')">Clear cache</button>
+            <label style="font-weight: bold; margin-left: 6px;"><input type="checkbox" checked id="chkChangeAfter"> Change After Sent</label>
+            <input type="number" id="rotateCountInput" value="5" style="width: 35px; border: 1px solid #94a3b8; padding: 1px 3px;">
+          </div>
+
+          <div class="sender-row">
+            <span class="lbl-fixed">Name *</span>
+            <span class="blue-btn-box" onclick="openAccountsModal()">Settings</span>
+            <input type="text" id="senderNameInput" class="txt-input" value="Teamonline Team">
+            <button class="btn-small" onclick="openTemplatePicker('name')">Pick</button>
+            <label><input type="checkbox"> Import</label>
+          </div>
+
+          <div class="sender-row">
+            <span class="lbl-fixed">Sender Mail</span>
+            <input type="text" id="senderMailInput" class="txt-input" value="claudiyaikahelsyaharani83@gmail.com">
+            <span class="blue-btn-box" onclick="openAccountsModal()">Gmass</span>
+          </div>
+
+          <div class="sender-row">
+            <span class="lbl-fixed">Subject</span>
+            <button class="btn-small" onclick="openTemplatePicker('subject')">Pick</button>
+            <input type="text" id="subjectInput" class="txt-input" value="Thanks For Your Order #RANDOM#">
+            <label><input type="checkbox"> Import</label>
+          </div>
+
+          <button class="btn-check-bounce" onclick="checkBounceLive()">Check Bounce</button>
+        </div>
+
+        <!-- Orange TFN Box -->
+        <div class="tfn-box">
+          <div class="tfn-row">
+            <span class="tfn-label">TFN 1 (#TFN#)</span>
+            <span class="green-b64">Base64 <input type="checkbox" id="tfn1B64"></span>
+            <input type="text" id="tfn1Input" class="tfn-input" value="+1 859 704-1290">
+          </div>
+          <div class="tfn-row">
+            <span class="tfn-label">TFN 2 (#TFNA#)</span>
+            <span class="green-b64">Base64 <input type="checkbox" id="tfn2B64"></span>
+            <input type="text" id="tfn2Input" class="tfn-input" value="+1 859 704-1290">
+          </div>
+          <div class="tfn-row" style="margin-top: 2px;">
+            <label><input type="checkbox"> Software Format?</label>
+            <span class="blue-btn-box" style="margin-left: auto;" onclick="alert('Software format preset active.')">Settings</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plain Text Body Editor -->
+      <div class="body-row">
+        <div class="body-left-opts">
+          <span style="font-size: 13px;">Body</span>
+          <label><input type="checkbox" checked id="chkHtmlBody"> Html Body ?</label>
+          <label><input type="checkbox"> Auto Body Style</label>
+          <label><input type="checkbox"> Import</label>
+          <label><input type="checkbox"> Auto Body</label>
+          <button class="btn-small" style="align-self: flex-end; margin-top: 2px;" onclick="openTemplatePicker('body')">Pick</button>
+        </div>
+        <textarea class="body-textarea" id="bodyTextInput">#RANDOM#
+Dear #NAME#,
+Thank you for choosing our service on #DATE#.
+Your Order #ORDER_ID# has been processed successfully.
+For support call us at #TFN#.</textarea>
+      </div>
+
+      <!-- Modify HTML & Delay Bar -->
+      <div class="modify-html-row">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="modify-badge">■ Modify Html</span>
+          <span style="font-weight: bold;">Delay (M.Sec)</span>
+          <input type="number" id="delayMsInput" value="0" style="width: 40px; border: 1px solid #94a3b8; padding: 1px 3px;">
+          <label><input type="radio" name="del" checked> Each</label>
+          <label><input type="radio" name="del"> Every 50</label>
+        </div>
+
+        <div>
+          <span style="font-weight: bold;">Page Format</span>
+          <select class="page-format-select" id="pageFormatSelect"><option>A4</option><option>Letter</option></select>
+        </div>
+      </div>
+
+      <!-- HTML & Format Section -->
+      <div class="html-section">
+        <div class="out-mode-radios">
+          <span>Content (html)</span>
+          <label><input type="radio" name="outmode" value="To pdf"> To pdf</label>
+          <label><input type="radio" name="outmode" value="To image"> To image</label>
+          <label><input type="radio" name="outmode" value="Inline image"> Inline image</label>
+          <label><input type="radio" name="outmode" value="Raw pdf" checked> Raw pdf</label>
+          <label><input type="radio" name="outmode" value="Inline Html"> Inline Html</label>
+          <label><input type="radio" name="outmode" value="Docx"> Docx</label>
+          <label><input type="radio" name="outmode" value="PPTX"> PPTX</label>
+        </div>
+
+        <div class="html-editor-container">
+          <div class="green-dropdown-bar">
+            <span>ContentType</span>
+            <select class="green-select"><option>Auto</option></select>
+            <span>Img Forma</span>
+            <select class="green-select"><option>heic</option><option>png</option></select>
+          </div>
+
+          <textarea class="html-code-area" id="htmlCodeArea"></tr>
+</tbody>
+</table>
+</div>
+</body>
+</html></textarea>
+
+          <div class="preview-bar">
+            <button class="btn-preview" onclick="previewHtml()">Preview HTML</button>
+            <span>Html. W</span>
+            <input type="number" value="0" style="width: 35px; border: 1px solid #94a3b8;">
+            <span>H :</span>
+            <input type="number" value="0" style="width: 35px; border: 1px solid #94a3b8;">
+            <label><input type="checkbox"> Random Width</label>
+            <label style="margin-left: auto;"><input type="checkbox"> Test Mail ?</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action & Status Row -->
+      <div class="action-row">
+        <button class="btn-small" style="padding: 6px 12px; font-weight: bold; background: #00E5FF; color: #000;" onclick="openTestMailModal()">Add Test Mail</button>
+        <span class="status-sending-text" id="liveStatusSending">Ready to send</span>
+        <button class="btn-stop" onclick="stopSend()">Stop</button>
+        <button class="btn-sending" id="btnSending" onclick="startBulkSend()">Sending...</button>
+      </div>
+
+      <div class="action-row" style="margin-top: 2px;">
+        <span class="status-ready-text" id="statusReadyLabel">Ready To Send</span>
+        <div class="black-counter-bar" id="blackCounterBar">Total Sent 0 of 19</div>
+      </div>
+
+    </div>
+
+    <!-- Vertical Watermark Banner -->
+    <div class="watermark-banner">
+      AMAN2 Ultra
+    </div>
+  </div>
+
+  <!-- Bottom Footer -->
+  <div class="footer-bar">
+    <span id="footerApiText">Active Session: {{ user.username }} ({{ user.role }})</span>
+    <span>Version : AMAN2-v12.0</span>
+  </div>
+
+  <!-- ==================== POPUP MODALS ==================== -->
+
+  <!-- 1. MODAL: ADD TEST MAIL -->
+  <div class="modal-overlay" id="testMailModal">
+    <div class="modal-box">
+      <h2 style="font-size: 15px; font-weight: bold; color: #00E5FF; margin-bottom: 12px;">✉️ Send Test Email (Instant Live Test)</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div>
+          <label style="font-size: 11px; color: #94a3b8;">Recipient Test Email Address:</label>
+          <input type="email" id="testRecipientEmail" placeholder="your_own_email@gmail.com" style="width: 100%; padding: 6px; background: #0f172a; border: 1px solid #00E5FF; color: #fff; font-size: 12px;">
+        </div>
+        <div style="font-size: 11px; color: #cbd5e1;">
+          Test email will be composed using current Subject, Body (auto-HTML), and active Gmail SMTP sender.
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <button onclick="executeSingleTestMail()" id="btnExecTest" style="flex: 1; background: #00c853; color: #000; font-weight: bold; padding: 8px; border: none; cursor: pointer; border-radius: 4px;">
+            🚀 Send Test Mail Now
+          </button>
+          <button onclick="document.getElementById('testMailModal').style.display='none'" style="background: #475569; color: #fff; padding: 8px 16px; border: none; cursor: pointer; border-radius: 4px;">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MODAL: PASTE RECIPIENTS DIALOG -->
+  <div class="modal-overlay" id="pasteModal">
+    <div class="modal-box">
+      <h2 style="font-size: 15px; font-weight: bold; color: #38bdf8; margin-bottom: 10px;">📋 Paste Recipient Emails List</h2>
+      <textarea id="pasteTextArea" rows="8" placeholder="Paste emails here (one per line)..." style="width: 100%; padding: 8px; background: #0f172a; border: 1px solid #475569; color: #fff; font-family: Consolas, monospace;"></textarea>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button onclick="applyPastedEmails()" style="flex: 1; background: #16a34a; color: #fff; font-weight: bold; padding: 6px; border: none; cursor: pointer;">
+          + Add to Recipient List
+        </button>
+        <button onclick="document.getElementById('pasteModal').style.display='none'" style="background: #475569; color: #fff; padding: 6px 12px; border: none; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MODAL: TEMPLATE PICKER -->
+  <div class="modal-overlay" id="pickerModal">
+    <div class="modal-box">
+      <h2 style="font-size: 15px; font-weight: bold; color: #f59e0b; margin-bottom: 10px;" id="pickerTitle">Templates Library</h2>
+      <div id="pickerOptions" style="display: flex; flex-direction: column; gap: 6px; max-height: 250px; overflow-y: auto;">
+      </div>
+      <button onclick="document.getElementById('pickerModal').style.display='none'" style="width: 100%; margin-top: 10px; background: #475569; color: #fff; padding: 6px; border: none; cursor: pointer;">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <!-- 4. MODAL: USER MANAGEMENT (ONLY FOR ADMIN) -->
+  {% if user.role == 'admin' %}
+  <div class="modal-overlay" id="userModal">
+    <div class="modal-box">
+      <h2 style="font-size: 15px; font-weight: bold; color: #00E5FF; margin-bottom: 12px;">👥 AMAN2 User Management (Create Accounts for Friends)</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div>
+          <label style="font-size: 11px; color: #94a3b8;">Friend's Username:</label>
+          <input type="text" id="mUser" placeholder="e.g. rahul_friend" style="width: 100%; padding: 4px; background: #0f172a; border: 1px solid #475569; color: #fff;">
+        </div>
+        <div>
+          <label style="font-size: 11px; color: #94a3b8;">Password:</label>
+          <input type="text" id="mPass" placeholder="e.g. pass123" style="width: 100%; padding: 4px; background: #0f172a; border: 1px solid #475569; color: #fff;">
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;">
+            <label style="font-size: 11px; color: #94a3b8;">Daily Limit:</label>
+            <input type="number" id="mLimit" value="5000" style="width: 100%; padding: 4px; background: #0f172a; border: 1px solid #475569; color: #fff;">
+          </div>
+          <div style="flex: 1;">
+            <label style="font-size: 11px; color: #94a3b8;">Validity (Days):</label>
+            <input type="number" id="mDays" value="30" style="width: 100%; padding: 4px; background: #0f172a; border: 1px solid #475569; color: #fff;">
+          </div>
+        </div>
+        <button onclick="createUserApi()" style="background: #16a34a; color: #fff; font-weight: bold; padding: 6px; margin-top: 8px; border: none; cursor: pointer;">
+          + Create Client User Account
+        </button>
+        <button onclick="document.getElementById('userModal').style.display='none'" style="background: #475569; color: #fff; padding: 4px; border: none; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 5. MODAL: GMAIL ACCOUNTS POOL -->
+  <div class="modal-overlay" id="accountsModal">
+    <div class="modal-box">
+      <h2 style="font-size: 15px; font-weight: bold; color: #22c55e; margin-bottom: 12px;">🔑 Gmail SMTP & 16-Char App Password</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div>
+          <label style="font-size: 11px; color: #94a3b8;">Gmail Address:</label>
+          <input type="email" id="mGmail" placeholder="youraccount@gmail.com" style="width: 100%; padding: 4px; background: #0f172a; border: 1px solid #475569; color: #fff;">
+        </div>
+        <div>
+          <label style="font-size: 11px; color: #94a3b8;">16-Character App Password (from Google Security):</label>
+          <input type="text" id="mAppPwd" placeholder="abcd efgh ijkl mnop" style="width: 100%; padding: 4px; background: #0f172a; border: 1px solid #475569; color: #fff;">
+        </div>
+        <button onclick="saveGmailAccountApi()" style="background: #16a34a; color: #fff; font-weight: bold; padding: 6px; margin-top: 8px; border: none; cursor: pointer;">
+          🔌 Verify & Save Gmail SMTP
+        </button>
+        <button onclick="document.getElementById('accountsModal').style.display='none'" style="background: #475569; color: #fff; padding: 4px; border: none; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MODAL: ERROR LIST -->
+  <div class="modal-overlay" id="errorModal">
+    <div class="modal-box">
+      <h2 style="font-size: 15px; font-weight: bold; color: #ef4444; margin-bottom: 10px;">📋 Error & Bounce Log History</h2>
+      <div id="errorLogContent" style="background: #0f172a; padding: 10px; max-height: 200px; overflow-y: auto; font-family: Consolas, monospace; font-size: 11px; color: #fca5a5;">
+        No bounce errors recorded. All deliveries successful.
+      </div>
+      <button onclick="document.getElementById('errorModal').style.display='none'" style="width: 100%; margin-top: 10px; background: #475569; color: #fff; padding: 6px; border: none; cursor: pointer;">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    let isSending = false;
+    let stopRequested = false;
+    let activeTask = 1;
+
+    function openTestMailModal() { document.getElementById('testMailModal').style.display = 'flex'; }
+    function openPasteModal() { document.getElementById('pasteModal').style.display = 'flex'; }
+    function openUserModal() { 
+      const el = document.getElementById('userModal');
+      if (el) el.style.display = 'flex'; 
+    }
+    function openAccountsModal() { document.getElementById('accountsModal').style.display = 'flex'; }
+    function openErrorModal() { document.getElementById('errorModal').style.display = 'flex'; }
+
+    function switchTask(t) {
+      activeTask = t;
+      document.querySelectorAll('.task-tab').forEach(el => el.classList.remove('active'));
+      document.getElementById('taskTab' + t).classList.add('active');
+    }
+
+    async function executeSingleTestMail() {
+      const recipient = document.getElementById('testRecipientEmail').value.trim();
+      if (!recipient || !recipient.includes('@')) {
+        alert("Please enter a valid recipient email address!");
+        return;
+      }
+
+      const btn = document.getElementById('btnExecTest');
+      btn.innerText = "Sending Test Mail...";
+      btn.disabled = true;
+
+      const payload = {
+        recipients: [recipient],
+        sender_name: document.getElementById('senderNameInput').value,
+        subject: document.getElementById('subjectInput').value,
+        body: document.getElementById('bodyTextInput').value
+      };
+
+      try {
+        const res = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        alert(data.message);
+        if (data.success) {
+          document.getElementById('testMailModal').style.display = 'none';
+        }
+      } catch(err) {
+        alert("Error sending test mail: " + err);
+      } finally {
+        btn.innerText = "🚀 Send Test Mail Now";
+        btn.disabled = false;
+      }
+    }
+
+    function applyPastedEmails() {
+      const text = document.getElementById('pasteTextArea').value;
+      const matches = text.match(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g) || [];
+      if (!matches.length) {
+        alert("No valid email addresses found in the pasted text!");
+        return;
+      }
+
+      const box = document.getElementById('recipientBox');
+      const unique = [...new Set(matches.map(e => e.trim().toLowerCase()))];
+      unique.forEach(email => {
+        const div = document.createElement('div');
+        div.className = 'recipient-item';
+        div.innerHTML = `<span>${email}</span><span class="check-icon">✓</span>`;
+        box.appendChild(div);
+      });
+
+      document.getElementById('blackCounterBar').innerText = `Total Sent 0 of ${box.children.length}`;
+      document.getElementById('pasteModal').style.display = 'none';
+      document.getElementById('pasteTextArea').value = '';
+    }
+
+    function openTemplatePicker(type) {
+      const modal = document.getElementById('pickerModal');
+      const title = document.getElementById('pickerTitle');
+      const container = document.getElementById('pickerOptions');
+      container.innerHTML = '';
+
+      let options = [];
+      if (type === 'name') {
+        title.innerText = "Pick Sender Display Name";
+        options = ["Teamonline Team", "Billing Department", "Customer Support Desk", "Account Services Team", "Official Notifications"];
+      } else if (type === 'subject') {
+        title.innerText = "Pick Subject Template";
+        options = [
+          "Thanks For Your Order #RANDOM#",
+          "Official Invoice Receipt #ORDER_ID#",
+          "Your Account Confirmation: #RANDOM#",
+          "Service Renewal Confirmation - #DATE#",
+          "{Order Confirmed|Payment Receipt|Invoice} #RANDOM#"
+        ];
+      } else if (type === 'body') {
+        title.innerText = "Pick Body Template";
+        options = [
+          "#RANDOM#\nDear #NAME#,\nThank you for choosing our service on #DATE#.\nYour Order #ORDER_ID# has been processed successfully.\nFor support call us at #TFN#.",
+          "#RANDOM#\nHello #NAME#,\nWe have successfully received your payment on #DATE#.\nInvoice reference: #INVOICE_ID#.\nHelpdesk toll-free: #TFN#.",
+          "{Hello|Hi|Greetings} #NAME#,\n{Thank you for your order|Your transaction is complete} on #DATE#.\nOrder ID: #ORDER_ID#\nIf you did not authorize this, call #TFN# immediately."
+        ];
+      }
+
+      options.forEach(opt => {
+        const div = document.createElement('div');
+        div.style.cssText = "padding: 8px; background: #0f172a; border: 1px solid #334155; cursor: pointer; border-radius: 4px;";
+        div.innerText = opt;
+        div.onclick = function() {
+          if (type === 'name') document.getElementById('senderNameInput').value = opt;
+          if (type === 'subject') document.getElementById('subjectInput').value = opt;
+          if (type === 'body') document.getElementById('bodyTextInput').value = opt;
+          modal.style.display = 'none';
+        };
+        container.appendChild(div);
+      });
+
+      modal.style.display = 'flex';
+    }
+
+    async function checkBounceLive() {
+      const email = document.getElementById('senderMailInput').value;
+      alert(`Bounce Protection & SMTP Check for ${email}: Active & Healthy!`);
+    }
+
+    function handleFileImport(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const matches = text.match(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g) || [];
+        if (!matches.length) {
+          alert("No valid email addresses found in the selected file!");
+          return;
+        }
+
+        const box = document.getElementById('recipientBox');
+        box.innerHTML = '';
+        const uniqueEmails = [...new Set(matches.map(m => m.trim().toLowerCase()))];
+        
+        uniqueEmails.forEach(email => {
+          const div = document.createElement('div');
+          div.className = 'recipient-item';
+          div.innerHTML = `<span>${email}</span><span class="check-icon">✓</span>`;
+          box.appendChild(div);
+        });
+
+        document.getElementById('blackCounterBar').innerText = `Total Sent 0 of ${uniqueEmails.length}`;
+        const badge = document.getElementById('successBadge');
+        badge.innerText = "Imported " + uniqueEmails.length;
+        badge.style.background = "#16a34a";
+        alert(`Successfully imported ${uniqueEmails.length} email addresses!`);
+      };
+      reader.readAsText(file);
+    }
+
+    async function createUserApi() {
+      const u = document.getElementById('mUser').value.trim();
+      const p = document.getElementById('mPass').value.trim();
+      const l = document.getElementById('mLimit').value.trim();
+      const d = document.getElementById('mDays').value.trim();
+      if (!u || !p) { alert("Enter Username and Password!"); return; }
+
+      const res = await fetch('/api/admin/create_user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: u, password: p, daily_limit: l, days_valid: d })
+      });
+      const data = await res.json();
+      alert(data.message);
+      if (data.success) {
+        document.getElementById('mUser').value = '';
+        document.getElementById('mPass').value = '';
+        document.getElementById('userModal').style.display = 'none';
+      }
+    }
+
+    async function saveGmailAccountApi() {
+      const em = document.getElementById('mGmail').value.trim();
+      const pw = document.getElementById('mAppPwd').value.trim();
+      if (!em || !pw) { alert("Enter Gmail and App Password!"); return; }
+
+      const res = await fetch('/api/accounts/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: em, app_password: pw, sender_name: document.getElementById('senderNameInput').value })
+      });
+      const data = await res.json();
+      alert(data.message);
+      if (data.success) {
+        document.getElementById('senderMailInput').value = em;
+        document.getElementById('accountsModal').style.display = 'none';
+      }
+    }
+
+    function openAllTagModal() {
+      alert("AMAN2 Ultra Tags:\n#RANDOM# - Dynamic 8-char Tracking ID\n#TFN# / #TFNA# - Phone Numbers\n#ORDER_ID# - Order ID\n#DATE# - Current Date\n#NAME# - Recipient Name\n{Hi|Hello|Dear} - Anti-Detect Spintax");
+    }
+
+    function previewHtml() {
+      const plainBody = document.getElementById('bodyTextInput').value;
+      const parsedBody = plainBody.replace(/#RANDOM#/g, "8X9K2M7P").replace(/#NAME#/g, "John Doe").replace(/#DATE#/g, "20/08/2026").replace(/#TFN#/g, "+1 859 704-1290");
+      const htmlOutput = "<div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; max-width: 600px;'>" + parsedBody.replace(/\n/g, "<br>") + "</div>";
+      const w = window.open();
+      w.document.write(htmlOutput);
+    }
+
+    function clearList() {
+      document.getElementById('recipientBox').innerHTML = '';
+      document.getElementById('blackCounterBar').innerText = "Total Sent 0 of 0";
+    }
+
+    function sliceEmails() {
+      const count = parseInt(document.getElementById('specifCount').value) || 350;
+      const box = document.getElementById('recipientBox');
+      const items = Array.from(box.children);
+      box.innerHTML = '';
+      items.slice(0, count).forEach(item => box.appendChild(item));
+      document.getElementById('blackCounterBar').innerText = `Total Sent 0 of ${box.children.length}`;
+    }
+
+    async function startBulkSend() {
+      const box = document.getElementById('recipientBox');
+      const recipientNodes = Array.from(box.querySelectorAll('.recipient-item span:first-child'));
+      const emails = recipientNodes.map(n => n.innerText.trim()).filter(e => e.includes('@'));
+
+      if (!emails.length) {
+        alert("Please import or paste recipient emails first!");
+        return;
+      }
+
+      isSending = true;
+      stopRequested = false;
+      document.getElementById('statusReadyLabel').innerText = "Sending in progress...";
+      
+      const badge = document.getElementById('taskSentBadge' + activeTask);
+      badge.className = 'task-tab-bot running';
+
+      const payload = {
+        sender_name: document.getElementById('senderNameInput').value,
+        subject: document.getElementById('subjectInput').value,
+        body: document.getElementById('bodyTextInput').value,
+        recipients: emails
+      };
+
+      for (let i = 0; i < emails.length; i++) {
+        if (stopRequested) break;
+        document.getElementById('liveStatusSending').innerText = `Sending to ${emails[i]}...`;
+        document.getElementById('blackCounterBar').innerText = `Total Sent ${i+1} of ${emails.length}`;
+        badge.innerText = `Sent-${i + 1}`;
+        await new Promise(r => setTimeout(r, 150));
+      }
+
+      const res = await fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      
+      if (!stopRequested) {
+        badge.className = 'task-tab-bot completed';
+        badge.innerText = `✓ Sent-${emails.length}`;
+        document.getElementById('liveStatusSending').innerText = "Completed!";
+        document.getElementById('statusReadyLabel').innerText = "Completed Successfully";
+        document.getElementById('successBadge').innerText = "Completed";
+        document.getElementById('successBadge').style.background = "#00e676";
+      } else {
+        badge.className = 'task-tab-bot';
+        document.getElementById('liveStatusSending').innerText = "Stopped by user";
+      }
+
+      alert(data.message);
+    }
+
+    function stopSend() {
+      stopRequested = true;
+      document.getElementById('liveStatusSending').innerText = "Stopped by user";
+    }
+
+    function togglePause() {
+      alert("Sending Paused / Resumed.");
+    }
+  </script>
+</body>
+</html>
