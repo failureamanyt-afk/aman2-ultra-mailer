@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMAN2 - Client Delivery Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .card { background-color: #1e293b; border: 1px solid #334155; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Top Navbar -->
+  <nav class="bg-[#0b1120] border-b border-[#1e293b] px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-xl font-black text-cyan-400 tracking-wider">AMAN2</span>
+      <span class="bg-cyan-500/20 text-cyan-300 text-xs px-2.5 py-0.5 rounded font-bold border border-cyan-500/30">CLIENT PANEL</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <span class="text-xs text-slate-400">Welcome, <b class="text-white">{{ user.fullname }}</b></span>
+      <a href="/logout" class="text-xs bg-red-900/50 hover:bg-red-800 text-red-200 px-3 py-1.5 rounded transition border border-red-700/50"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</a>
+    </div>
+  </nav>
+
+  <div class="max-w-6xl mx-auto p-6 space-y-6">
+
+    <!-- Quota & Validity Status Banner -->
+    <div class="bg-gradient-to-r from-cyan-950/60 via-slate-900 to-emerald-950/60 border border-cyan-500/30 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-white">Your Dedicated Mailer Suite</h2>
+          <p class="text-xs text-slate-400">Status: <span class="text-emerald-400 font-semibold">Active & High-Delivery Enabled</span></p>
+        </div>
+      </div>
+      <div class="flex items-center gap-6 text-xs">
+        <div class="text-center">
+          <div class="text-slate-400 text-[10px] uppercase font-bold">Daily Sending Limit</div>
+          <div class="text-base font-black text-cyan-400">{{ user.daily_limit }} <span class="text-xs font-normal text-slate-400">emails</span></div>
+        </div>
+        <div class="text-center border-l border-slate-700 pl-6">
+          <div class="text-slate-400 text-[10px] uppercase font-bold">Account Expiry</div>
+          <div class="text-base font-black text-amber-400">{{ user.expiry_date }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Client Mailer Form -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Left Column: Sender Gmail Setup & Tag Reference -->
+      <div class="lg:col-span-1 space-y-6">
+        <div class="card rounded-xl p-5 space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2">
+            <i class="fa-solid fa-key"></i> Sender Gmail & App Password
+          </h3>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Your Gmail Address</label>
+            <input type="email" id="userSenderEmail" placeholder="yourgmail@gmail.com" class="w-full px-3 py-1.5 bg-[#0f172a] border border-slate-600 rounded text-white text-xs">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">16-Character App Password</label>
+            <input type="text" id="userAppPassword" placeholder="xxxx xxxx xxxx xxxx" class="w-full px-3 py-1.5 bg-[#0f172a] border border-slate-600 rounded text-white text-xs">
+          </div>
+          <button onclick="testUserCredentials()" class="w-full py-1.5 bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white rounded transition">
+            🔌 Verify SMTP Connection
+          </button>
+        </div>
+
+        <div class="card rounded-xl p-5 space-y-2 text-xs">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+            <i class="fa-solid fa-tags"></i> Dynamic Tags & Spintax
+          </h3>
+          <ul class="space-y-1.5 text-slate-300">
+            <li><code class="text-cyan-400 bg-slate-900 px-1 py-0.5 rounded">{Hi|Hello|Dear}</code> Spintax greeting</li>
+            <li><code class="text-cyan-400 bg-slate-900 px-1 py-0.5 rounded">#NAME#</code> Recipient's name</li>
+            <li><code class="text-cyan-400 bg-slate-900 px-1 py-0.5 rounded">#DATE#</code> Current date</li>
+            <li><code class="text-cyan-400 bg-slate-900 px-1 py-0.5 rounded">#ORDER_ID#</code> Random Order ID</li>
+            <li><code class="text-cyan-400 bg-slate-900 px-1 py-0.5 rounded">#TFN#</code> Helpline Number</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Column: Campaign Composer & Senders -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="card rounded-xl p-5 space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2 border-b border-slate-700 pb-2">
+            <i class="fa-solid fa-paper-plane"></i> Compose & Launch Email Campaign
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Subject (Spintax Allowed)</label>
+              <input type="text" id="clientSubject" value="{Order Confirmation|Invoice Receipt} #ORDER_ID#" class="w-full px-3 py-1.5 bg-[#0f172a] border border-slate-600 rounded text-white text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Sender Display Name</label>
+              <input type="text" id="clientSenderName" value="Customer Support" class="w-full px-3 py-1.5 bg-[#0f172a] border border-slate-600 rounded text-white text-xs">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Recipient Emails (One per line)</label>
+            <textarea id="clientRecipients" rows="4" placeholder="client1@example.com&#10;client2@example.com" class="w-full p-2.5 bg-[#0f172a] border border-slate-600 rounded text-white text-xs font-mono"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Email Body Content</label>
+            <textarea id="clientBody" rows="5" class="w-full p-2.5 bg-[#0f172a] border border-slate-600 rounded text-white text-xs font-mono">{Hello|Dear} #NAME#,&#10;{Your request has been successfully completed|Thank you for choosing our service} on #DATE#.&#10;Reference Tracking ID: #ORDER_ID#&#10;For 24/7 help call: #TFN#</textarea>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-slate-700">
+            <div id="clientLiveStatus" class="text-xs text-emerald-400 font-semibold">Ready to send</div>
+            <button onclick="startClientSend()" class="px-6 py-2.5 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-bold text-xs rounded-lg shadow-lg flex items-center gap-2">
+              <i class="fa-solid fa-rocket"></i> Send Emails Now
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    async function testUserCredentials() {
+      const email = document.getElementById('userSenderEmail').value.trim();
+      const app_password = document.getElementById('userAppPassword').value.trim();
+      if (!email || !app_password) {
+        alert('Please enter your Gmail and 16-character App Password');
+        return;
+      }
+      const res = await fetch('/api/test_smtp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, app_password })
+      });
+      const data = await res.json();
+      alert(data.message);
+    }
+
+    async function startClientSend() {
+      const email = document.getElementById('userSenderEmail').value.trim();
+      const app_password = document.getElementById('userAppPassword').value.trim();
+      const recipients = document.getElementById('clientRecipients').value.trim().split('\n').filter(e => e.includes('@'));
+      
+      if (!email || !app_password) {
+        alert('Please enter your Sender Gmail and App Password on the left panel');
+        return;
+      }
+      if (!recipients.length) {
+        alert('Please enter at least one recipient email address');
+        return;
+      }
+
+      const payload = {
+        sender_email: email,
+        app_password: app_password,
+        sender_name: document.getElementById('clientSenderName').value,
+        subject: document.getElementById('clientSubject').value,
+        body: document.getElementById('clientBody').value,
+        recipients: recipients
+      };
+
+      document.getElementById('clientLiveStatus').innerText = 'Sending in progress...';
+      const res = await fetch('/api/send_direct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      document.getElementById('clientLiveStatus').innerText = data.message;
+      alert(data.message);
+    }
+  </script>
+</body>
+</html>
