@@ -1,0 +1,17 @@
+# AMAN2 Ultra - 24/7 Free Cloud Deployment Guide
+
+To make your AMAN2 Universal Link work 24/7 forever (even when your PC is turned off), follow these 3 simple steps on Render.com (100% Free):
+
+1. Go to https://render.com and sign up for a free account.
+2. Click **New +** -> **Web Service**.
+3. Connect your GitHub repository (or upload the AMAN2_Ultra_Mailer folder).
+4. Set the following settings:
+   - **Environment:** Python 3
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn web_server:app`
+5. Click **Create Web Service**.
+
+Once deployed, Render gives you a permanent 24/7 link like:
+`https://aman2-ultra-mailer.onrender.com`
+
+This link will stay online 24/7, 365 days a year, even when your PC is completely turned off!
