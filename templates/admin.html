@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMAN2 - Super Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #141414; color: #e5e5e5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .card { background-color: #1e1e1e; border: 1px solid #333333; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Top Navbar -->
+  <nav class="bg-[#111111] border-b border-[#292929] px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-xl font-black text-[#00E5FF] tracking-wider">AMAN2</span>
+      <span class="bg-amber-500/20 text-amber-300 text-xs px-2.5 py-0.5 rounded font-bold border border-amber-500/30">SUPER ADMIN</span>
+      <span class="text-xs text-emerald-400 font-semibold ml-2"><i class="fa-solid fa-shield-halved"></i> Anti-Detect Zero-Hash Engine Active</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <span class="text-xs text-gray-400">Logged in as: <b class="text-white">Admin</b></span>
+      <a href="/logout" class="text-xs bg-red-900/50 hover:bg-red-800 text-red-200 px-3 py-1.5 rounded transition border border-red-700/50"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</a>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto p-6 space-y-6">
+
+    <!-- Universal Link Share Box -->
+    <div class="bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-purple-900/40 border border-blue-500/40 rounded-xl p-5 shadow-lg">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 text-blue-300 font-bold text-base">
+            <i class="fa-solid fa-share-nodes text-lg text-[#00E5FF]"></i> Universal Access Link for Friends
+          </div>
+          <p class="text-xs text-gray-300 mt-1">Send this link to your friends. They can open it directly in their phone or laptop browser and log in with the user accounts you create below!</p>
+        </div>
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <input type="text" id="univLinkInput" readonly value="{{ universal_share_url }}" class="bg-[#111111] border border-blue-400/50 text-emerald-400 font-mono text-sm px-4 py-2 rounded-lg w-full md:w-80 select-all focus:outline-none">
+          <button onclick="copyUnivLink()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition whitespace-nowrap shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-copy"></i> <span id="copyBtnText">Copy Link</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Left Column: User Management (Create & List) -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- Create User Card -->
+        <div class="card rounded-xl p-5">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-amber-400 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-user-plus"></i> Create Client Account
+          </h2>
+          <form id="createUserForm" onsubmit="handleCreateUser(event)" class="space-y-3">
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Username (Friend's Login)</label>
+              <input type="text" id="newUsername" required placeholder="e.g. rahul_friend" class="w-full px-3 py-1.5 bg-[#2a2a2a] border border-[#444] rounded text-white text-sm focus:outline-none focus:border-amber-400">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Password</label>
+              <input type="text" id="newPassword" required placeholder="e.g. pass123" class="w-full px-3 py-1.5 bg-[#2a2a2a] border border-[#444] rounded text-white text-sm focus:outline-none focus:border-amber-400">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Friend's Full Name</label>
+              <input type="text" id="newFullName" placeholder="e.g. Rahul Kumar" class="w-full px-3 py-1.5 bg-[#2a2a2a] border border-[#444] rounded text-white text-sm focus:outline-none focus:border-amber-400">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-gray-400 mb-1">Daily Limit</label>
+                <input type="number" id="newLimit" value="5000" class="w-full px-3 py-1.5 bg-[#2a2a2a] border border-[#444] rounded text-white text-sm">
+              </div>
+              <div>
+                <label class="block text-xs text-gray-400 mb-1">Validity (Days)</label>
+                <input type="number" id="newDays" value="30" class="w-full px-3 py-1.5 bg-[#2a2a2a] border border-[#444] rounded text-white text-sm">
+              </div>
+            </div>
+            <button type="submit" class="w-full mt-2 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded transition">
+              <i class="fa-solid fa-plus mr-1"></i> Add Client Account
+            </button>
+          </form>
+        </div>
+
+        <!-- Users List Card -->
+        <div class="card rounded-xl p-5">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-3 flex items-center justify-between">
+            <span><i class="fa-solid fa-users text-blue-400 mr-1"></i> Client Accounts</span>
+            <button onclick="loadUsers()" class="text-xs text-blue-400 hover:underline"><i class="fa-solid fa-rotate"></i></button>
+          </h2>
+          <div id="usersListContainer" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+            <!-- Dynamic users list injected here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 2 Columns: Admin Mailer & Gmail Accounts -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- Gmail Accounts Configuration -->
+        <div class="card rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+              <i class="fa-solid fa-envelope"></i> Gmail Accounts & App Passwords Pool
+            </h2>
+            <button onclick="document.getElementById('addAccModal').classList.toggle('hidden')" class="px-3 py-1 bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold rounded">
+              <i class="fa-solid fa-plus mr-1"></i> Add Gmail Account
+            </button>
+          </div>
+
+          <!-- Add Account Inline Modal / Form -->
+          <div id="addAccModal" class="hidden bg-[#181818] border border-[#444] p-4 rounded-lg mb-4 space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-gray-400 mb-1">Gmail Address</label>
+                <input type="email" id="accEmail" placeholder="youraccount@gmail.com" class="w-full px-3 py-1.5 bg-[#252525] border border-[#555] rounded text-white text-xs">
+              </div>
+              <div>
+                <label class="block text-xs text-gray-400 mb-1">16-Digit App Password</label>
+                <input type="text" id="accPassword" placeholder="abcd efgh ijkl mnop" class="w-full px-3 py-1.5 bg-[#252525] border border-[#555] rounded text-white text-xs">
+              </div>
+            </div>
+            <div class="flex gap-2 justify-end">
+              <button onclick="testAndSaveAccount()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded">
+                Test Connection & Save
+              </button>
+            </div>
+          </div>
+
+          <div id="accountsTableContainer" class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#292929] text-gray-400 uppercase">
+                <tr>
+                  <th class="p-2">Gmail Address</th>
+                  <th class="p-2">Sent Count</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="accountsTableBody" class="divide-y divide-[#333]">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Quick Sending Center -->
+        <div class="card rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-[#333] pb-3">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-[#00E5FF] flex items-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i> Quick Launch Sending Center
+            </h2>
+            <span class="text-xs bg-emerald-900/60 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded">
+              Spintax + Anti-Detect Enabled
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Subject (Spintax Supported)</label>
+              <input type="text" id="mailSubject" value="{Order Confirmation|Invoice Receipt|Account Update} #ORDER_ID#" class="w-full px-3 py-1.5 bg-[#2a2a2a] border border-[#444] rounded text-white text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Sender Display Name</label>
+              <input type="text" id="mailSenderName" value="{Support Team|Billing Desk}" class="w-full px-3 py-1.5 bg-[#2a2a2a] border border-[#444] rounded text-white text-xs font-mono">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Recipients (One email per line)</label>
+            <textarea id="mailRecipients" rows="4" placeholder="client1@example.com&#10;client2@example.com" class="w-full p-2.5 bg-[#2a2a2a] border border-[#444] rounded text-white text-xs font-mono"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Email Body (HTML / Plain / Tags: #NAME#, #DATE#, #TFN#, #ORDER_ID#)</label>
+            <textarea id="mailBody" rows="4" class="w-full p-2.5 bg-[#2a2a2a] border border-[#444] rounded text-white text-xs font-mono">{Hello|Hi} #NAME#,&#10;{Thank you for your order|Your payment was confirmed} on #DATE#.&#10;Reference: #ORDER_ID#&#10;Helpline: #TFN#</textarea>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <div id="liveStatusText" class="text-xs text-emerald-400 font-semibold">Ready to send</div>
+            <button onclick="startSending()" class="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-lg shadow-lg flex items-center gap-2">
+              <i class="fa-solid fa-bolt"></i> Start Anti-Detect Delivery
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyUnivLink() {
+      const copyText = document.getElementById("univLinkInput");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(copyText.value);
+      
+      const btnText = document.getElementById("copyBtnText");
+      btnText.innerText = "Copied!";
+      setTimeout(() => { btnText.innerText = "Copy Link"; }, 2000);
+    }
+
+    async function loadUsers() {
+      const res = await fetch('/api/admin/users');
+      const data = await res.json();
+      const container = document.getElementById('usersListContainer');
+      container.innerHTML = '';
+      data.forEach(u => {
+        if (u.role === 'admin') return;
+        const div = document.createElement('div');
+        div.className = 'p-3 bg-[#252525] border border-[#383838] rounded flex items-center justify-between text-xs';
+        div.innerHTML = `
+          <div>
+            <div class="font-bold text-white">${u.fullname || u.username} <span class="text-gray-400 font-normal">(@${u.username})</span></div>
+            <div class="text-[11px] text-gray-400">Limit: ${u.daily_limit}/day | Expires: ${u.expiry_date}</div>
+          </div>
+          <button onclick="deleteUser('${u.username}')" class="text-red-400 hover:text-red-300 px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function handleCreateUser(e) {
+      e.preventDefault();
+      const payload = {
+        username: document.getElementById('newUsername').value,
+        password: document.getElementById('newPassword').value,
+        fullname: document.getElementById('newFullName').value,
+        daily_limit: document.getElementById('newLimit').value,
+        days_valid: document.getElementById('newDays').value
+      };
+      const res = await fetch('/api/admin/create_user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      alert(data.message);
+      if (data.success) {
+        document.getElementById('createUserForm').reset();
+        loadUsers();
+      }
+    }
+
+    async function deleteUser(username) {
+      if (!confirm(`Delete user ${username}?`)) return;
+      const res = await fetch('/api/admin/delete_user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username })
+      });
+      const data = await res.json();
+      alert(data.message);
+      loadUsers();
+    }
+
+    async function loadAccounts() {
+      const res = await fetch('/api/accounts');
+      const data = await res.json();
+      const tbody = document.getElementById('accountsTableBody');
+      tbody.innerHTML = '';
+      data.forEach(a => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-2 font-mono text-emerald-400">${a.email}</td>
+          <td class="p-2">${a.sent_count || 0}</td>
+          <td class="p-2"><span class="bg-emerald-900/60 text-emerald-300 px-1.5 py-0.5 rounded text-[10px]">Active</span></td>
+          <td class="p-2 text-right">
+            <button onclick="deleteAccount('${a.email}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function testAndSaveAccount() {
+      const email = document.getElementById('accEmail').value.trim();
+      const app_password = document.getElementById('accPassword').value.trim();
+      if (!email || !app_password) {
+        alert('Please enter both Gmail address and 16-character App Password');
+        return;
+      }
+      const res = await fetch('/api/accounts/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, app_password })
+      });
+      const data = await res.json();
+      alert(data.message);
+      if (data.success) {
+        document.getElementById('accEmail').value = '';
+        document.getElementById('accPassword').value = '';
+        document.getElementById('addAccModal').classList.add('hidden');
+        loadAccounts();
+      }
+    }
+
+    async function deleteAccount(email) {
+      if (!confirm(`Remove ${email}?`)) return;
+      await fetch('/api/accounts/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      loadAccounts();
+    }
+
+    async function startSending() {
+      const recipients = document.getElementById('mailRecipients').value.trim().split('\n').filter(e => e.includes('@'));
+      if (!recipients.length) {
+        alert('Please enter at least one recipient email address');
+        return;
+      }
+      const payload = {
+        subject: document.getElementById('mailSubject').value,
+        sender_name: document.getElementById('mailSenderName').value,
+        body: document.getElementById('mailBody').value,
+        recipients: recipients
+      };
+      document.getElementById('liveStatusText').innerText = 'Sending in progress...';
+      const res = await fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      document.getElementById('liveStatusText').innerText = data.message;
+      loadAccounts();
+    }
+
+    loadUsers();
+    loadAccounts();
+  </script>
+</body>
+</html>
